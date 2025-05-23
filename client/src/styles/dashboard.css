@@ -59,3 +59,48 @@
 .btn.outline:hover {
   background-color: #ecf6fd;
 }
+
+.full-card-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.full-card {
+  background: white;
+  padding: 40px;
+  border-radius: 12px;
+  width: 80%;
+  max-width: 600px;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+.calendar-wrapper {
+  width: 50vw;
+  max-width: 700px;       /* optional max size */
+  height: 50vh;
+  max-height: 400px;
+  margin: 0 auto;         /* center horizontally */
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  border-radius: 8px;
+  background-color: white;
+}
+
+.calendar-wrapper .react-calendar {
+  width: 100% !important;   /* make calendar fill the wrapper */
+  height: 100% !important;  /* match wrapper height */
+  margin: 0 auto;           /* center calendar inside wrapper */
+  border-radius: 8px;
+  box-sizing: border-box;   /* ensure padding/borders don't overflow */
+  box-shadow: none;         /* optional: remove extra shadow if any */
+}
+
+

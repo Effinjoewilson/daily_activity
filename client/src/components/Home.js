@@ -6,7 +6,7 @@ function Home() {
   const navigate = useNavigate();
 
   return (
-    <div className="home-container">
+    <div className="home-container1">
       <h1 className="main-title">Daily Activity</h1>
       <h2 className="subtitle">Welcome</h2>
       <p className="description">Please log in or sign up to continue</p>
