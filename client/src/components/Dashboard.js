@@ -54,11 +54,28 @@ const Dashboard = () => {
             <div className="full-card-overlay">
               <div className="full-card">
                 <h2>{selectedDate.toDateString()}</h2>
-                <p>Add your activity for this date here...</p>
-                <button className="btn" onClick={closeCard}>Close</button>
+                <textarea
+                  placeholder="Add your activity for this date here..."
+                  rows={6}
+                  style={{
+                    width: '100%',
+                    padding: '10px',
+                    fontSize: '1rem',
+                    borderRadius: '5px',
+                    border: '1px solid #ccc',
+                    resize: 'vertical',
+                    marginBottom: '20px',
+                    boxSizing: 'border-box',
+                  }}
+                />
+                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+                  <button className="btn" /* onClick={handleSave} */>Save</button>
+                  <button className="btn" onClick={closeCard}>Close</button>
+                </div>
               </div>
             </div>
           )}
+
         </>
       ) : (
         <>
