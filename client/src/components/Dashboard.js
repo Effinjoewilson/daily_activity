@@ -1,23 +1,36 @@
 import React, { useEffect, useState } from 'react';
-import '../styles/dashboard.css';
 
 const Dashboard = () => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    // Simulated protected request
+    //console.log("Token:", token);
     if (!token) return;
 
-    // Optional: make a secure backend call to validate token
-    setUser({ name: "John Doe", email: "john@example.com" }); // mock data
+    fetch('http://localhost:5000/api/user', {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    })
+      .then(res => {
+        if (!res.ok) throw new Error('Unauthorized');
+        return res.json();
+      })
+      .then(data => {
+        //console.log("User data received:", data);
+        setUser(data);
+      })
+      .catch(() => setUser(null));
   }, []);
 
   return (
     <div className="dashboard">
-      <h2>Welcome to your Dashboard</h2>
       {user ? (
-        <p>Hello, {user.name} ({user.email})</p>
+        <>
+          <h2>Hiii {user.name}</h2>
+          <p>Welcome to your Daily Activity</p>
+        </>
       ) : (
         <p>Please log in to view this page</p>
       )}
