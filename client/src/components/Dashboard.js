@@ -2,40 +2,75 @@ import React, { useEffect, useState } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import '../styles/dashboard.css';
-import '../styles/home.css'; // Reuse styles from home
+import '../styles/home.css';
 
 const Dashboard = () => {
   const [user, setUser] = useState(null);
   const [selectedDate, setSelectedDate] = useState(null);
   const [showCard, setShowCard] = useState(false);
+  const [activityText, setActivityText] = useState('');
+  const [loadingActivity, setLoadingActivity] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) return;
 
     fetch('http://localhost:5000/api/user', {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      headers: { Authorization: `Bearer ${token}` },
     })
-      .then(res => {
-        if (!res.ok) throw new Error('Unauthorized');
-        return res.json();
-      })
-      .then(data => {
-        setUser(data);
-      })
+      .then(res => (res.ok ? res.json() : Promise.reject()))
+      .then(data => setUser(data))
       .catch(() => setUser(null));
   }, []);
 
   const handleDateClick = (date) => {
     setSelectedDate(date);
     setShowCard(true);
+    fetchActivity(date);
+  };
+
+  const fetchActivity = (date) => {
+    setLoadingActivity(true);
+    const token = localStorage.getItem('token');
+    fetch(`http://localhost:5000/api/activity?date=${date.toISOString().split('T')[0]}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then(res => (res.ok ? res.json() : Promise.reject()))
+      .then(data => {
+        setActivityText(data.content || '');
+        setLoadingActivity(false);
+      })
+      .catch(() => {
+        setActivityText('');
+        setLoadingActivity(false);
+      });
+  };
+
+  const saveActivity = () => {
+    const token = localStorage.getItem('token');
+    fetch('http://localhost:5000/api/activity', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        date: selectedDate.toISOString().split('T')[0],
+        content: activityText,
+      }),
+    })
+      .then(res => {
+        if (!res.ok) throw new Error('Failed to save');
+        alert('Activity saved successfully!');
+        setShowCard(false);
+      })
+      .catch(() => alert('Error saving activity'));
   };
 
   const closeCard = () => {
     setShowCard(false);
     setSelectedDate(null);
+    setActivityText('');
   };
 
   return (
@@ -49,33 +84,30 @@ const Dashboard = () => {
             <Calendar onClickDay={handleDateClick} />
           </div>
 
-
           {showCard && (
             <div className="full-card-overlay">
               <div className="full-card">
                 <h2>{selectedDate.toDateString()}</h2>
-                <textarea
-                  placeholder="Add your activity for this date here..."
-                  rows={6}
-                  style={{
-                    width: '100%',
-                    padding: '10px',
-                    fontSize: '1rem',
-                    borderRadius: '5px',
-                    border: '1px solid #ccc',
-                    resize: 'vertical',
-                    marginBottom: '20px',
-                    boxSizing: 'border-box',
-                  }}
-                />
-                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
-                  <button className="btn" /* onClick={handleSave} */>Save</button>
-                  <button className="btn" onClick={closeCard}>Close</button>
-                </div>
+                {loadingActivity ? (
+                  <p>Loading...</p>
+                ) : (
+                  <>
+                    <textarea
+                      rows={8}
+                      value={activityText}
+                      onChange={e => setActivityText(e.target.value)}
+                      style={{ width: '100%', fontSize: '1rem' }}
+                      placeholder="Add your activity for this date here..."
+                    />
+                    <div style={{ marginTop: '15px' }}>
+                      <button className="btn" onClick={saveActivity}>Save</button>{' '}
+                      <button className="btn" onClick={closeCard}>Close</button>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           )}
-
         </>
       ) : (
         <>
