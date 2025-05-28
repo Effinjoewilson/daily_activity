@@ -10,6 +10,7 @@ const Dashboard = () => {
   const [showCard, setShowCard] = useState(false);
   const [activityText, setActivityText] = useState('');
   const [loadingActivity, setLoadingActivity] = useState(false);
+  const [weather, setWeather] = useState(null);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -21,6 +22,13 @@ const Dashboard = () => {
       .then(res => (res.ok ? res.json() : Promise.reject()))
       .then(data => setUser(data))
       .catch(() => setUser(null));
+  }, []);
+
+  useEffect(() => {
+    fetch('https://wttr.in/?format=j1')
+      .then(res => res.json())
+      .then(data => setWeather(data))
+      .catch(err => console.error('Weather fetch error:', err));
   }, []);
 
   const handleDateClick = (date) => {
@@ -80,8 +88,23 @@ const Dashboard = () => {
           <h2 className="subtitle">Hiii {user.name}</h2>
           <p className="description">Welcome to your Daily Activity</p>
 
-          <div className="calendar-wrapper">
-            <Calendar onClickDay={handleDateClick} />
+          <div className="dashboard-center">
+            <div className="calendar-wrapper">
+              <Calendar onClickDay={handleDateClick} />
+            </div>
+
+            <div className="weather-box">
+              <h3>Current Weather</h3>
+              {weather ? (
+                <>
+                  <p><strong>Location:</strong> {weather.nearest_area[0].areaName[0].value}</p>
+                  <p><strong>Temperature:</strong> {weather.current_condition[0].temp_C}°C</p>
+                  <p><strong>Condition:</strong> {weather.current_condition[0].weatherDesc[0].value}</p>
+                </>
+              ) : (
+                <p>Loading weather...</p>
+              )}
+            </div>
           </div>
 
           {showCard && (

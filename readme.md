@@ -1,5 +1,5 @@
 project-root/
-├── client/                  # React frontend
+├── client/                         # React frontend
 │   ├── public/
 │   │   └── index.html
 │   ├── src/
@@ -14,18 +14,23 @@ project-root/
 │   │   │   ├── dashboard.css
 │   │   ├── App.js
 │   │   ├── index.js
-│   └── package.json         # React dependencies and scripts
+│   └── package.json               # React dependencies and scripts
 │
-├── server/                  # Node.js backend
-│   │─── db.js               # PostgreSQL database connection
-│   ├── routes/
-│   │   └── auth.js          # Signup & login API routes
-│   ├── server.js            # Main Express server
-│   └── .env                 # Environment variables (DB connection, JWT secret)
+├── server/                        # Node.js backend
+│   ├── middleware/                # Middleware functions
+│   │   └── authenticateToken.js   # JWT token authentication
+│   ├── routes/                    # Express routes
+│   │   ├── auth.js                # Signup & login routes
+│   │   ├── activity.js            # Activity CRUD routes (GET/POST)
+│   │   └── user.js                # User profile route (GET)
+│   ├── db.js                      # PostgreSQL database connection
+│   ├── server.js                  # Main Express server entry
+│   └── .env                       # Environment variables (DB config, secrets)
 │
 ├── .gitignore
 ├── README.md
-└── package.json             # Node.js backend dependencies and scripts
+└── package.json                   # Backend dependencies and scripts
+
 
 
 Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process
